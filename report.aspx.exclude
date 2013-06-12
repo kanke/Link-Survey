@@ -1,0 +1,152 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="report.aspx.cs" Inherits="report" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Link Performance Survey: Reports</title>
+</head>
+<body>
+
+
+<form id="form1" runat="server" style="font-family:Trebuchet MS; font-size:small">  
+
+
+    <div style="text-align:center;">      
+        <table ID="TableMenu" runat="server">
+            <tr><td><asp:LinkButton ID="LinkButton2" runat="server" PostBackUrl="~/Endpage.aspx">Exit</asp:LinkButton></td></tr>
+            <tr><td>
+                <asp:Button ID="Button1" runat="server" style="margin-bottom: 0px" 
+                    Text="Show General Summary" />
+                </td></tr>           
+            </table>
+           
+          <%--  <td>
+                <asp:DropDownList ID="BizUnitDropDown" runat="server" DataSourceID="BizUnitDataSource"
+                        DataTextField="bu_name" DataValueField="bu_id" Width="330px" AppendDataBoundItems="True" AutoPostBack="True">
+                        <asp:ListItem Value="0">-- Select One --</asp:ListItem>
+                    </asp:DropDownList>
+                   
+            </td>--%>
+            <%--<td>
+               <asp:DropDownList ID="DeptDropDown" runat="server" DataSourceID="DeptDataSource"
+                        DataTextField="department" DataValueField="dept_id" Width="330px" 
+                    AutoPostBack="True" >
+                    </asp:DropDownList>
+            </td>     --%>           
+            </tr>
+            <tr><td>&nbsp;</td></tr>
+        </table>       
+   
+        
+        <table style="text-align:center; width:1000px;">
+        <%--<thead>
+            <tr style="  background-color:Gold">
+                <th colspan="5" style="text-align:right;">Total Respondents: &nbsp;</th>
+                <th colspan="3" style="text-align:left;">
+                    <asp:DetailsView ID="dv1" runat="server" DataSourceID="Section1DataSource" 
+                    AutoGenerateRows="false" BorderWidth="0px">
+	                    <Fields>
+	                        <asp:BoundField ShowHeader="false" DataField="total" />
+	                    </Fields>
+	                </asp:DetailsView>
+                </th>--%>
+               <%-- </tr>--%>
+               
+           <%--    <thead>
+            <tr style="  background-color:Gold">
+                <th colspan="5" style="text-align:right;">Total Respondents: &nbsp;</th>
+                <th colspan="3" style="text-align:left;">
+                    <asp:DetailsView ID="dv1" runat="server"
+                    AutoGenerateRows="false" BorderWidth="0px">
+	                    <Fields>
+	                        <asp:BoundField ShowHeader="false" DataField="total" />
+	                    </Fields>
+	                </asp:DetailsView>
+                </th>
+               </tr>--%>
+                
+                <asp:TableHeaderRow ID="TableHeaderRow1" runat="server"  HorizontalAlign="Center">
+                <asp:TableHeaderCell ID="TableHeaderCell1" runat="server" ColumnSpan="8" BackColor="Gold">Total respondents:&nbsp;
+                    <asp:Label ID="LabelTotalRespondents" runat="server"></asp:Label>
+                </asp:TableHeaderCell>                
+            </asp:TableHeaderRow>
+            
+      
+			<%--<tr style="background-color:BlanchedAlmond;"><th colspan="8">Multichoice</th></tr>--%>
+			<tr>
+				<th rowspan="2" <%--colspan="2"--%> style="background-color:cadetblue;">Question</th>
+				<th colspan="2" style="background-color:lightblue;">Responses</th>
+				<th colspan="2" style="background-color:cornflowerblue;">Weighed Analysis</th>
+			</tr>
+			<tr>
+				<%--<th style="background-color:lightblue;">1</th>
+				<th style="background-color:lightblue;">2</th>
+				<th style="background-color:lightblue;">3</th>--%>
+				<th style="background-color:lightblue;">GOOD</th>
+				<th style="background-color:lightblue;">BAD</th>
+				<th style="background-color:cornflowerblue;">Total</th>
+				<th style="background-color:cornflowerblue;">Average</th>
+			</tr>
+			<%--<tr style="background-color:Beige;"><th colspan="8">Simulation Participant Feedback</th>--%>
+		</thead>
+		<asp:Repeater ID="Repeater1" runat="server" DataSourceID="Section1DataSource0" 
+            EnableViewState="True" onprerender="Repeater1_PreRender">        
+                    
+		<ItemTemplate>
+		    <tr>
+		        <td><asp:Literal ID="qno_s1" runat="server" Text='<%# Eval("qno") %>'/></td>
+		        <td><asp:Literal ID="good" runat="server" Text='<%# Eval("good") %>'/></td>
+		        <td><asp:Literal ID="bad" runat="server" Text='<%# Eval("bad") %>'/></td>
+		        <%--<td><asp:Literal ID="rating3_s1" runat="server" Text='<%# Eval("rating3") %>'/></td>
+		        <td><asp:Literal ID="rating4_s1" runat="server" Text='<%# Eval("rating4")%>'/></td>
+		        <td><asp:Literal ID="rating5_s1" runat="server" Text='<%# Eval("rating5")%>'/></td>--%>
+		        <td><asp:Literal ID="wtotal_s1" runat="server" EnableViewState="True" Text='<%# Eval("wtotal")%>'/></td>
+		        <td><asp:Literal ID="wavg_s1" runat="server" EnableViewState="True" Text='<%# Eval("wavg", "{0:F2}")%>'/></td>
+		    </tr>
+		</ItemTemplate>
+		
+        </asp:Repeater>
+        
+        <tr>            
+            <td colspan="3">&nbsp;</td>
+            <td style="background-color:cornflowerblue"><asp:Literal ID="avg_wtotal_1" runat="server" /></td>
+            <td style="background-color:cornflowerblue"><asp:Literal ID="avg_wavg_1" runat="server" /></td>
+        </tr>
+        <tfoot>
+        <%--<tr>
+                <td colspan="1">
+                    <asp:Label ID="Label1" runat="server">Multiple Choice:</asp:Label>                    
+                </td>
+                <td colspan="7" style="text-align:left;">
+                    <asp:Button ID="ExportButton" runat="server" OnClick="ExportButton_Click" Text="Export" />
+                </td>
+            </tr> --%>
+            <tr>
+                <td colspan="1">
+                    <asp:Label ID="Label2" runat="server">Prose Questions:</asp:Label>
+                </td>                
+                <td colspan="4" style="text-align:left;">
+                    <asp:Button ID="ExportProseButton" runat="server" OnClick="ExportProseButton_Click" Text="Export" />
+                </td>
+            </tr>
+            
+            <tr>
+                <td colspan="5">
+                    <asp:Label ID="msgLabel" runat="server" Font-Bold="True"></asp:Label>
+                    <br />
+                    <br />
+                   <%-- //<asp:SqlDataSource ID="Section1DataSource0" runat="server" --%>
+                    <asp:SqlDataSource ID="Section1DataSource0" runat="server" ConnectionString="<%$ConnectionStrings:link_surveyConnectionString%>"
+                        SelectCommand="linksur.getSurveyResult" SelectCommandType="StoredProcedure" CancelSelectOnNullParameter="false">
+                    </asp:SqlDataSource>
+                </td>
+            </tr>
+            </tfoot>         
+		</table>
+ </div> 
+           
+                
+    </form>
+</body>
+</html>

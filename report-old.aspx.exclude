@@ -1,0 +1,483 @@
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="report-old.aspx.cs" Inherits="report" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title> Link Performance Survey: Reports</title>
+</head>
+<body>
+    <form id="form1" runat="server" style="font-family:Trebuchet MS; font-size:small">
+        <asp:Table ID="Table1" runat="server">            
+            <asp:TableFooterRow>            
+                <asp:TableCell><asp:LinkButton ID="LinkButton2" runat="server" PostBackUrl="~/Endpage.aspx">Exit</asp:LinkButton></asp:TableCell>
+            </asp:TableFooterRow>
+        </asp:Table>
+        
+        <%--<asp:SqlDataSource ID="SqlDataSource2" runat="server" 
+            <%--ConnectionString="<%$ ConnectionStrings:remedy_surveyConnectionString %>" 
+            onselecting="SqlDataSource2_Selecting" 
+            SelectCommand="SELECT * FROM [departments] WHERE ([business_unit] = @business_unit) ORDER BY [department]">
+            <SelectParameters>
+                <asp:ControlParameter ControlID="UnitDDL" Name="business_unit" 
+                    PropertyName="SelectedValue" Type="String" />
+            </SelectParameters>--%>
+        <%--</asp:SqlDataSource>--%>
+        <%--<asp:SqlDataSource ID="SqlDataSource1" runat="server" 
+            ConnectionString="<%$ ConnectionStrings:ConnectionString %>" 
+            SelectCommand="SELECT * FROM [business_units] ORDER BY [unit]">
+        </asp:SqlDataSource>--%>  
+         <asp:Table ID="TableMenu" runat="server">
+            <asp:TableRow><asp:TableCell ColumnSpan="3">&nbsp;</asp:TableCell></asp:TableRow>
+            <asp:TableRow HorizontalAlign="Center">
+            <asp:TableCell>
+                <asp:Button ID="MainRptButton" runat="server" Text="Show General Summary"
+                 BorderStyle="Double" OnClick="MainRptButton_Click" Width="330px" />
+            </asp:TableCell>
+            <asp:TableCell>
+               <%-- <asp:Button ID="UnitRptButton" runat="server" Text=" "
+                 BorderStyle="Double" OnClick="UnitRptButton_Click" Width="330px" />--%>
+            </asp:TableCell>
+            <asp:TableCell>
+               <%-- <asp:Button ID="DeptRptButton" runat="server" Text="Show Department Summary"
+                 BorderStyle="Double" OnClick="DeptRptButton_Click" Width="330px" />--%>
+            </asp:TableCell>                
+            
+            </asp:TableRow>
+            <asp:TableRow HorizontalAlign="Right">
+            <asp:TableCell></asp:TableCell>
+            <asp:TableCell>
+                <%--<asp:DropDownList runat="server" AutoPostBack="True" ID="UnitDDL" DataSourceID="SqlDataSource1"
+                 DataValueField="unit" DataTextField="unit" OnSelectedIndexChanged="UnitDDL_SelectedIndexChanged" 
+                 Width="330px"></asp:DropDownList>--%>
+            </asp:TableCell>
+            <asp:TableCell>
+                <%--<asp:DropDownList runat="server" ID="DeptDDL" DataSourceID="SqlDataSource2"
+                 DataValueField="department" DataTextField="department" Width="330px"></asp:DropDownList>--%>
+            </asp:TableCell>                
+            </asp:TableRow>
+            <asp:TableRow><asp:TableCell ColumnSpan="3">&nbsp;</asp:TableCell></asp:TableRow>
+        </asp:Table>
+        
+    <div style="text-align:center;">    
+
+        <asp:Table ID="Table3" runat="server" CellSpacing="1" Width="1000px">
+            
+            <asp:TableHeaderRow ID="TableHeaderRow1" runat="server"  HorizontalAlign="Center">
+                <asp:TableHeaderCell ID="TableHeaderCell1" runat="server" ColumnSpan="5" BackColor="Gold">Total respondents:
+                    <asp:Label ID="LabelTotalRespondents" runat="server"></asp:Label>
+                </asp:TableHeaderCell>                
+            </asp:TableHeaderRow>
+           
+            <asp:TableHeaderRow ID="TableHeaderRow2" runat="server" BackColor="BlanchedAlmond">
+               <%-- <asp:TableHeaderCell ID="TableHeaderCell2" runat="server" ColumnSpan="8">Multichoice</asp:TableHeaderCell>--%>
+                <%--<asp:TableHeaderCell ID="TableHeaderCell3" runat="server" ColumnSpan="6">Prose</asp:TableHeaderCell>--%>
+            </asp:TableHeaderRow>
+            
+            <asp:TableHeaderRow ID="TableHeaderRow3" runat="server">
+                <asp:TableHeaderCell ID="TableHeaderCell4" runat="server" RowSpan="1" BackColor="cadetblue">Question</asp:TableHeaderCell>
+                <asp:TableHeaderCell ID="TableHeaderCell5" runat="server" ColumnSpan="2" BackColor="lightblue">Responses</asp:TableHeaderCell>
+                <asp:TableHeaderCell ID="TableHeaderCell6" runat="server" ColumnSpan="2" BackColor="cornflowerblue">Weighted Analysis</asp:TableHeaderCell>
+                
+                <%--
+                <asp:TableHeaderCell ID="TableHeaderCell7" runat="server" RowSpan="2" BackColor="cadetblue">Question</asp:TableHeaderCell>
+                <asp:TableHeaderCell ID="TableHeaderCell8" runat="server" RowSpan="2" ColumnSpan="5" BackColor="lightblue">Responses</asp:TableHeaderCell>
+                --%>
+                </asp:TableHeaderRow>
+            
+            <asp:TableHeaderRow ID="TableHeaderRow4" runat="server" >
+              <asp:TableHeaderCell ID="TableHeaderCell10" runat="server" BackColor="lightblue"> </asp:TableHeaderCell>
+                <%--<asp:TableHeaderCell ID="TableHeaderCell10" runat="server" BackColor="lightblue">5</asp:TableHeaderCell>
+                <asp:TableHeaderCell ID="TableHeaderCell11" runat="server" BackColor="lightblue">4</asp:TableHeaderCell>
+                <asp:TableHeaderCell ID="TableHeaderCell12" runat="server" BackColor="lightblue">3</asp:TableHeaderCell>--%>
+                <asp:TableHeaderCell ID="TableHeaderCell13" runat="server" BackColor="lightblue">GOOD</asp:TableHeaderCell>
+                <asp:TableHeaderCell ID="TableHeaderCell2" runat="server" BackColor="lightblue">BAD</asp:TableHeaderCell>
+                <asp:TableHeaderCell ID="TableHeaderCell14" runat="server" BackColor="cornflowerblue">Total</asp:TableHeaderCell>
+                <asp:TableHeaderCell ID="TableHeaderCell15" runat="server" BackColor="cornflowerblue">Average</asp:TableHeaderCell>
+            </asp:TableHeaderRow>
+    
+                
+            <asp:TableHeaderRow ID="TableHeaderRow5" runat="server">
+                <asp:TableHeaderCell BackColor="Beige" ColumnSpan="5" HorizontalAlign="Center"> Link Performance Survey </asp:TableHeaderCell>
+                
+                <%--
+                <asp:TableCell ID="TableCell2" runat="server" RowSpan="2">17</asp:TableCell>
+                <asp:TableHeaderCell ID="TableHeaderCell17" runat="server" BackColor="cornflowerblue">Yes</asp:TableHeaderCell>
+                <asp:TableHeaderCell ID="TableHeaderCell18" runat="server" BackColor="cornflowerblue">No</asp:TableHeaderCell>
+                --%>
+                
+            </asp:TableHeaderRow>
+            
+            <asp:TableRow>
+                <asp:TableCell>1</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label1_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label1_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label1_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label1_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label1_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label1Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label1Avg" runat="server"></asp:Label></asp:TableCell>
+                
+                <%--
+                <asp:TableCell BackColor="beige"><asp:Label ID="Label17_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell BackColor="beige"><asp:Label ID="Label17_2" runat="server"></asp:Label></asp:TableCell>
+                --%>
+                
+            </asp:TableRow>
+            <asp:TableRow>
+                <asp:TableCell>2</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label2_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label2_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label2_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label2_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label2_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label2Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label2Avg" runat="server"></asp:Label></asp:TableCell>                
+                
+                <%--
+                <asp:TableCell RowSpan="2">19</asp:TableCell>
+                <asp:TableHeaderCell BackColor="cornflowerblue">Email</asp:TableHeaderCell>
+                <asp:TableHeaderCell BackColor="cornflowerblue">Handbills</asp:TableHeaderCell>
+                <asp:TableHeaderCell BackColor="cornflowerblue">Line Manager</asp:TableHeaderCell>
+                <asp:TableHeaderCell BackColor="cornflowerblue">Newsletter</asp:TableHeaderCell>
+                <asp:TableHeaderCell BackColor="cornflowerblue">Posters</asp:TableHeaderCell>
+                --%>
+            </asp:TableRow>
+            <asp:TableRow>
+               <%-- <asp:TableCell>3</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label3_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label3_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label3_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label3_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label3_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label3Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label3Avg" runat="server"></asp:Label></asp:TableCell>--%>
+                
+                <%--
+                <asp:TableCell BackColor="Beige"><asp:Label ID="Label19_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell BackColor="Beige"><asp:Label ID="Label19_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell BackColor="Beige"><asp:Label ID="Label19_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell BackColor="Beige"><asp:Label ID="Label19_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell BackColor="Beige"><asp:Label ID="Label19_5" runat="server"></asp:Label></asp:TableCell>
+                --%>
+            </asp:TableRow>                      
+            <asp:TableRow>
+              <%--  <asp:TableCell>4</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label4_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label4_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label4_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label4_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label4_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label4Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label4Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>
+            <asp:TableRow>
+               <%-- <asp:TableCell>5</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label5_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label5_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label5_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label5_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label5_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label5Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label5Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>                        
+            
+            <asp:TableHeaderRow ID="TableHeaderRow6" runat="server">
+               <%-- <asp:TableCell ColumnSpan="6" BackColor="Beige"></asp:TableCell>
+                <asp:TableCell BackColor="cornflowerblue"><asp:Label ID="LabelS1Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableHeaderCell BackColor="cornflowerblue"><asp:Label ID="LabelS1Avg" runat="server"></asp:Label></asp:TableHeaderCell>--%>
+            </asp:TableHeaderRow>
+            
+
+             <asp:TableHeaderRow ><%--ID="TableHeaderRow7" runat="server" BackColor="Beige">--%>
+               <%-- <asp:TableHeaderCell ID="TableHeaderCell19" runat="server" ColumnSpan="8" HorizontalAlign="Center">Desire</asp:TableHeaderCell>--%>
+            </asp:TableHeaderRow>            
+              
+            <asp:TableRow>
+                <%--<asp:TableCell>6</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label6_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label6_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label6_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label6_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label6_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label6Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label6Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>                      
+            <asp:TableRow>
+                <%--<asp:TableCell>7</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label7_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label7_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label7_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label7_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label7_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label7Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label7Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>
+            <asp:TableRow>
+                <%--<asp:TableCell>8</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label8_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label8_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label8_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label8_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label8_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label8Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label8Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>
+            <asp:TableRow>
+               <%-- <asp:TableCell>9</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label9_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label9_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label9_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label9_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label9_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label9Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label9Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>
+            <asp:TableRow>
+                <%--<asp:TableCell>10</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label10_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label10_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label10_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label10_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label10_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label10Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label10Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>            
+            <asp:TableRow>
+                <%--<asp:TableCell>11</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label11_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label11_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label11_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label11_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label11_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label11Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label11Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>            
+            
+            <asp:TableHeaderRow ID="TableHeaderRow8" runat="server">
+                <%--<asp:TableCell ColumnSpan="6" BackColor="Beige"></asp:TableCell>
+                <asp:TableCell BackColor="cornflowerblue"><asp:Label ID="LabelS2Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableHeaderCell BackColor="cornflowerblue"><asp:Label ID="LabelS2Avg" runat="server"></asp:Label></asp:TableHeaderCell>--%>
+            </asp:TableHeaderRow>
+
+
+            <asp:TableHeaderRow ID="TableHeaderRow9" runat="server" BackColor="Beige">
+              <%--  <asp:TableHeaderCell ID="TableHeaderCell20" runat="server" ColumnSpan="8" HorizontalAlign="Center">Knowledge</asp:TableHeaderCell>--%>
+            </asp:TableHeaderRow>
+            
+            <asp:TableRow>
+                <%--<asp:TableCell>12</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label12_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label12_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label12_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label12_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label12_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label12Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label12Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>            
+            <asp:TableRow>
+                <%--<asp:TableCell>13</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label13_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label13_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label13_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label13_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label13_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label13Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label13Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>
+            <asp:TableRow>
+                <%--<asp:TableCell>14</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label14_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label14_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label14_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label14_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label14_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label14Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label14Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>
+            <asp:TableRow>
+                <%--<asp:TableCell>15</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label15_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label15_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label15_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label15_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label15_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label15Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label15Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>
+            <asp:TableRow>
+                <%--<asp:TableCell>16</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label16_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label16_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label16_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label16_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label16_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label16Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label16Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>
+            <asp:TableRow>
+                <%--<asp:TableCell>17</asp:TableCell>--%>
+               <%-- <asp:TableCell><asp:Label ID="Label17_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label17_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label17_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label17_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label17_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label17Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label17Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>
+            
+            <asp:TableHeaderRow>
+             <%--ID="TableHeaderRow10" runat="server">--%>
+               <%-- <asp:TableCell BackColor="Beige" ColumnSpan="6"></asp:TableCell>
+                <asp:TableCell BackColor="cornflowerblue"><asp:Label ID="LabelS3Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableHeaderCell BackColor="cornflowerblue"><asp:Label ID="LabelS3Avg" runat="server"></asp:Label></asp:TableHeaderCell>--%>
+            </asp:TableHeaderRow>
+
+            
+            <asp:TableHeaderRow> 
+            <%--ID="TableHeaderRow11" runat="server" BackColor="Beige">--%>
+               <%-- <asp:TableHeaderCell ID="TableHeaderCell21" runat="server" ColumnSpan="8" HorizontalAlign="Center">Ability</asp:TableHeaderCell>--%>
+            </asp:TableHeaderRow>
+
+            <asp:TableRow>
+                <%--<asp:TableCell>18</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label18_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label18_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label18_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label18_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label18_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label18Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label18Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>
+            <asp:TableRow>
+                <%--<asp:TableCell>19</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label19_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label19_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label19_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label19_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label19_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label19Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label19Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>
+            <asp:TableRow>
+                <%--<asp:TableCell>20</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label20_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label20_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label20_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label20_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label20_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label20Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label20Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>
+            <asp:TableRow>
+               <%-- <asp:TableCell>21</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label21_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label21_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label21_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label21_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label21_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label21Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label21Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>
+            <asp:TableRow>
+               <%-- <asp:TableCell>22</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label22_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label22_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label22_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label22_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label22_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label22Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label22Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>
+            
+            <asp:TableHeaderRow >
+           <%-- ID="TableHeaderRow12" runat="server">--%>
+                <%--<asp:TableCell BackColor="Beige" ColumnSpan="6"></asp:TableCell>
+                <asp:TableCell BackColor="cornflowerblue"><asp:Label ID="LabelS4Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableHeaderCell BackColor="cornflowerblue"><asp:Label ID="LabelS4Avg" runat="server"></asp:Label></asp:TableHeaderCell>--%>
+            </asp:TableHeaderRow>
+
+
+            <asp:TableHeaderRow >
+        <%--    ID="TableHeaderRow13" runat="server" BackColor="Beige">--%>
+                <%--<asp:TableHeaderCell ColumnSpan="8" HorizontalAlign="Center">Reinforcement</asp:TableHeaderCell>--%>
+            </asp:TableHeaderRow>
+
+            <asp:TableRow>
+                <%--<asp:TableCell>23</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label23_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label23_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label23_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label23_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label23_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label23Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label23Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>
+            <asp:TableRow>
+               <%-- <asp:TableCell>24</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label24_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label24_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label24_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label24_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label24_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label24Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label24Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>
+            <asp:TableRow>
+                <%--<asp:TableCell>25</asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label25_1" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label25_2" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label25_3" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label25_4" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label25_5" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label25Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableCell><asp:Label ID="Label25Avg" runat="server"></asp:Label></asp:TableCell>--%>
+            </asp:TableRow>
+
+            <asp:TableHeaderRow >
+            <%--ID="TableHeaderRow14" runat="server">--%>
+                <%--<asp:TableCell ColumnSpan="6" BackColor="Beige"></asp:TableCell>
+                <asp:TableCell BackColor="cornflowerblue"><asp:Label ID="LabelS5Tot" runat="server"></asp:Label></asp:TableCell>
+                <asp:TableHeaderCell BackColor="cornflowerblue"><asp:Label ID="LabelS5Avg" runat="server"></asp:Label></asp:TableHeaderCell>--%>
+            </asp:TableHeaderRow>
+            </asp:Table>
+            
+            <asp:Table ID="Table4" runat="server" HorizontalAlign="Left">            
+            <asp:TableRow ID="TableRow2" runat="server">
+                <%--<asp:TableCell runat="server">
+                    <asp:Label ID="Label1" runat="server">Multiple Choice:</asp:Label>                    
+                </asp:TableCell>
+                <asp:TableCell runat="server">
+                    <asp:Button ID="ExportButton" runat="server" OnClick="ExportButton_Click" Text="Export" />
+                </asp:TableCell>--%>
+            </asp:TableRow>               
+            
+            <asp:TableRow ID="TableRow1" runat="server">
+                <asp:TableCell runat="server">
+                    <asp:Label ID="Label2" runat="server">Prose Question:</asp:Label>
+                </asp:TableCell>                
+                <asp:TableCell runat="server">
+                    <asp:Button ID="ExportProseButton" runat="server" OnClick="ExportProseButton_Click" Text="Export" />
+                </asp:TableCell>
+            </asp:TableRow>
+            
+            <asp:TableFooterRow ID="TableFooterRow1" runat="server">
+                <asp:TableCell ColumnSpan="14" runat="server">
+                    <asp:Label ID="msgLabel" runat="server" Font-Bold="True"></asp:Label>
+                </asp:TableCell>
+            </asp:TableFooterRow>            
+
+        </asp:Table>              
+        <br />
+        <br />
+         <h4>
+             <asp:Image ID="Image1" runat="server" Height="41px" 
+                 ImageUrl="~/images/1318324789_data.png" />&nbsp;
+             <a href="report_details.aspx">Click here for a more detailed 
+        report</a></h4>
+        <%--<asp:HyperLink ID="HyperLink1" runat="server">Click here for a more detailed 
+        report</asp:HyperLink>--%>
+        </div>
+    </form>
+</body>
+</html>

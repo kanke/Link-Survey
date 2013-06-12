@@ -1,0 +1,551 @@
+using System;
+using System.Data;
+using System.Data.Sql;
+using System.Data.SqlClient;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using System.IO;
+
+public partial class report : System.Web.UI.Page
+{
+    static string filename;
+    int totresps = 0;
+    string tres = "";
+
+    string[][] qqueries = new string[8][];
+    int[][] qresponses = new int[8][];
+    float[] qtotals = new float[8];
+    float[] qavgs = new float[8];
+
+    string[][] squeries = new string[5][];
+    int[][] sresponses = new int[5][];
+    float[] stotals = new float[5];
+    float[] savgs = new float[5];
+
+    //string[][] s6options = new string[2][];
+    //string[][] s6queries = new string[2][];
+    //int[][] s6responses = new int[2][];
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        //ExportButton.Enabled = false;
+
+        //s6options[0] = new string[2]; s6options[1] = new string[5];
+        //s6queries[0] = new string[2]; s6queries[1] = new string[5];
+        //s6responses[0] = new int[2]; s6responses[1] = new int[5];
+
+        //s6options[0][0] = "Yes";
+        //s6options[0][1] = "No";
+
+        //s6options[1][0] = "Email";
+        //s6options[1][1] = "Handbills";
+        //s6options[1][2] = "Line Manager";
+        //s6options[1][3] = "Newsletter";
+        //s6options[1][4] = "Posters";
+
+        //for (int i = 0; i < s6responses.Length; i++)
+        //{
+        //    for (int j = 0; j < s6responses[i].Length; j++)
+        //    {
+        //        s6queries[i][j] = "";
+        //        s6responses[i][j] = 0;
+        //    }
+        //}
+    }
+
+    private void execQueries(bool unitadd, bool deptadd)
+    {
+        initQueries(unitadd, deptadd);
+        try
+        {
+            //execute queries
+           // totresps = new DBhandler().executeScalar(tres);
+           // qresponses = new DBhandler().executeReportBatch(qqueries);
+          //  sresponses = new DBhandler().executeReportBatch(squeries);
+            //s6responses = new DBhandler().executeReportBatch(s6queries);
+
+            computeScores();
+            displaySummary();
+            
+        }
+        catch (Exception ex)
+        {
+            msgLabel.Text = ex.Message;
+            msgLabel.Visible = true;
+        }
+    }
+
+    
+
+    private void computeScores()
+    {
+        //compute scores
+        for (int i = 1; i <= qresponses.Length; i++)
+        {
+            qtotals[i - 1] = 0;
+            for (int j = 1; j <= qresponses[i - 1].Length; j++)
+            {
+                qtotals[i - 1] += (float)qresponses[i - 1][j - 1] * j;
+            }
+
+            qavgs[i - 1] = (totresps != 0) ? qtotals[i - 1] / totresps : 0;
+        }
+
+        for (int i = 1; i <= sresponses.Length; i++)
+        {
+            stotals[i - 1] = 0;
+            for (int j = 1; j <= sresponses[i - 1].Length; j++)
+            {
+                stotals[i - 1] += sresponses[i - 1][j - 1];
+            }
+
+            savgs[i - 1] = (totresps != 0) ? stotals[i - 1] / totresps : 0;
+        }
+    }
+
+    private void initQueries(bool unitadd, bool deptadd)
+    {
+        //build and store sql queries
+        tres = "select count(*) from linksur.link_responses where qno='1'";
+        //if (unitadd)
+        //{
+        //    tres += " and business_unit='";
+        //    tres += UnitDDL.SelectedValue;
+        //    tres += "'";
+        //}
+        //if (deptadd)
+        //{
+        //    tres += " and department='";
+        //    tres += DeptDDL.SelectedValue;
+        //    tres += "'";
+        //}
+
+
+        for (int i = 1; i <= qqueries.Length; i++)
+        {
+            qqueries[i - 1] = new string[5];
+            qresponses[i - 1] = new int[5];
+
+            for (int j = 1; j <= qqueries[i - 1].Length; j++)
+            {
+                qqueries[i - 1][j - 1] = "select count(*) from linksur.link_responses where qno='";
+                qqueries[i - 1][j - 1] += i;
+                qqueries[i - 1][j - 1] += "' and response='";
+                qqueries[i - 1][j - 1] += j;
+                qqueries[i - 1][j - 1] += "'";
+                //if (unitadd)
+                //{
+                //    qqueries[i - 1][j - 1] += " and business_unit='";
+                //    qqueries[i - 1][j - 1] += UnitDDL.SelectedValue;
+                //    qqueries[i - 1][j - 1] += "'";
+                //}
+                //if (deptadd)
+                //{
+                //    qqueries[i - 1][j - 1] += " and department='";
+                //    qqueries[i - 1][j - 1] += DeptDDL.SelectedValue;
+                //    qqueries[i - 1][j - 1] += "'";
+                //}
+                qresponses[i - 1][j - 1] = 0;
+            }
+        }
+
+       for (int i = 1; i <= squeries.Length; i++)
+        {
+            squeries[i - 1] = new string[5];
+            sresponses[i - 1] = new int[5];
+
+            for (int j = 1; j <= qqueries[i - 1].Length; j++)
+            {
+                squeries[i - 1][j - 1] = "select count(*) from linksur.link_responses where qno in";
+                squeries[i - 1][j - 1] += "(select qno from linksur.link_questions where type='";
+                squeries[i - 1][j - 1] += i;
+                squeries[i - 1][j - 1] += "') and response='";
+                squeries[i - 1][j - 1] += j;
+                squeries[i - 1][j - 1] += "'";
+                //if (unitadd)
+                //{
+                //    squeries[i - 1][j - 1] += " and business_unit='";
+                //    squeries[i - 1][j - 1] += UnitDDL.SelectedValue;
+                //    squeries[i - 1][j - 1] += "'";
+                //}
+                //if (deptadd)
+                //{
+                //    squeries[i - 1][j - 1] += " and department='";
+                //    squeries[i - 1][j - 1] += DeptDDL.SelectedValue;
+                //    squeries[i - 1][j - 1] += "'";
+                //}
+                sresponses[i - 1][j - 1] = 0;
+            } 
+        }
+
+        //for (int i = 0; i < s6queries.Length; i++)
+        //{
+        //    for (int j = 0; j < s6queries[i].Length; j++)
+        //    {
+        //        s6queries[i][j] = "select count(*) from responses where qno in";
+        //        s6queries[i][j] += "(select qno from questions where section='6')";
+        //        s6queries[i][j] += "and response='";
+        //        s6queries[i][j] += s6options[i][j];
+        //        s6queries[i][j] += "'";
+        //        if (unitadd)
+        //        {
+        //            s6queries[i][j] += " and business_unit='";
+        //            s6queries[i][j] += UnitDDL.SelectedValue;
+        //            s6queries[i][j] += "'";
+        //        }
+        //        if (deptadd)
+        //        {
+        //            s6queries[i][j] += " and department='";
+        //            s6queries[i][j] += DeptDDL.SelectedValue;
+        //            s6queries[i][j] += "'";
+        //        }
+        //    }
+        //}
+    }
+
+    protected void MainRptButton_Click(object sender, EventArgs e)
+    {
+        execQueries(false, false);
+        filename = "General";
+    }
+    
+    protected void UnitRptButton_Click(object sender, EventArgs e)
+    {
+        //execQueries(true, false);
+        //filename = UnitDDL.SelectedValue;
+    }    
+    
+    protected void DeptRptButton_Click(object sender, EventArgs e)
+    {
+        //execQueries(true, true);
+        //filename = DeptDDL.SelectedValue+ "("+ UnitDDL.SelectedValue + ")";
+    }
+    
+    protected void UnitDDL_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        //DeptDDL.DataBind();
+    }
+    
+    protected void ExportButton_Click(object sender, EventArgs e)
+    {
+    
+    }
+
+    protected void ExportProseButton_Click(object sender, EventArgs e)
+    {
+        Response.Clear();
+        Response.Charset = "";
+        Response.ContentType = "application/vnd.ms-excel";
+        Response.AddHeader("Content-Disposition", "attachment; filename=\"Link Performance Survey Report-Prose.xls\"");
+        Response.Write("Q.no\tResponse\tDate\tDepartment\tBranch\tRegion\tHead of Service Support\tBranch Manager\r\n");
+
+        //query database for answers to prose questions...
+        string sql = @"select l.qno
+        ,l.response
+        ,l.date
+        ,d.dept_name
+        ,b.name
+        ,re.name
+        ,hs.hss_name
+        ,bm.bm_name
+
+        from linksur.link_responses l 
+        inner join linksur.link_departments d on l.dept_no = d.dept_no
+        inner join linksur.link_branches b on l.branch_no = b.branch_no
+        inner join linksur.link_regions re on l.region_no = re.region_no
+		inner join linksur.link_hss hs on l.hss_no = hs.hss_no
+        inner join linksur.link_bm bm on l.bm_no = bm.bm_no
+        where l.qno in('2') order by l.qno desc,l.dept_no,l.branch_no";
+
+        //string sql = "select qno,response,branch,department,region,date from remsur.remedy_responses where qno in('9','10') order by qno desc,department,branch";
+        DBhandler handler = new DBhandler();
+        handler.command.CommandText = sql;
+        handler.connection.Open();
+        SqlDataReader proseReader = handler.command.ExecuteReader();
+        
+        
+        //write output to file...
+        while (proseReader.Read())
+        {
+            //.Trim().Replace("\r\n", "*").Replace("-", ":")
+            //Response.Write(proseReader.GetValue(0).ToString().Replace("\r\n", "*").Replace("-", ":") + "\t");  //+ proseReader.GetValue(1).ToString().Trim().Replace("\r\n", "*").Replace("-", ":") + "\t" + proseReader.GetValue(2).ToString() + "\t" + proseReader.GetValue(3).ToString() + "\t" + proseReader.GetValue(4).ToString() + "\t" + proseReader.GetValue(5).ToString() + "\t" + proseReader.GetValue(6).ToString() + "\r\n");
+            Response.Write(proseReader.GetValue(0).ToString() + "\t" + proseReader.GetValue(1).ToString() + "\t" + proseReader.GetValue(2).ToString() + "\t" + "\t" + proseReader.GetValue(3).ToString() + "\t" + proseReader.GetValue(4).ToString() + "\t" + proseReader.GetValue(5).ToString() + "\t" + proseReader.GetValue(6).ToString() + "\t" + proseReader.GetValue(7).ToString() + "\r\n");
+        }
+        proseReader.Close();
+
+        Response.End();
+    }
+
+    private void displaySummary()
+    {
+        //display results...
+        LabelTotalRespondents.Text = totresps.ToString();
+        //questions...
+        //question 1
+        //Label1_1.Text = qresponses[0][0].ToString();
+        Label1_1.Text = qresponses[0][0].ToString();
+        Label1_2.Text = qresponses[0][1].ToString();
+        Label1_3.Text = qresponses[0][2].ToString();
+        Label1_4.Text = qresponses[0][3].ToString();
+        Label1_5.Text = qresponses[0][4].ToString();
+        Label1Tot.Text = qtotals[0].ToString();
+        Label1Avg.Text = Math.Round(qavgs[0], 2).ToString();
+
+        //question 2
+        Label2_1.Text = qresponses[1][0].ToString();
+        Label2_2.Text = qresponses[1][1].ToString();
+        Label2_3.Text = qresponses[1][2].ToString();
+        Label2_4.Text = qresponses[1][3].ToString();
+        Label2_5.Text = qresponses[1][4].ToString();
+        Label2Tot.Text = qtotals[1].ToString();
+        Label2Avg.Text = Math.Round(qavgs[1], 2).ToString();
+
+        ////question 3
+        //Label3_1.Text = qresponses[2][0].ToString();
+        //Label3_2.Text = qresponses[2][1].ToString();
+        //Label3_3.Text = qresponses[2][2].ToString();
+        //Label3_4.Text = qresponses[2][3].ToString();
+        //Label3_5.Text = qresponses[2][4].ToString();
+        //Label3Tot.Text = qtotals[2].ToString();
+        //Label3Avg.Text = Math.Round(qavgs[2], 2).ToString();
+
+        ////question 4
+        //Label4_1.Text = qresponses[3][0].ToString();
+        //Label4_2.Text = qresponses[3][1].ToString();
+        //Label4_3.Text = qresponses[3][2].ToString();
+        //Label4_4.Text = qresponses[3][3].ToString();
+        //Label4_5.Text = qresponses[3][4].ToString();
+        //Label4Tot.Text = qtotals[3].ToString();
+        //Label4Avg.Text = Math.Round(qavgs[3], 2).ToString();
+
+        ////question 5
+        //Label5_1.Text = qresponses[4][0].ToString();
+        //Label5_2.Text = qresponses[4][1].ToString();
+        //Label5_3.Text = qresponses[4][2].ToString();
+        //Label5_4.Text = qresponses[4][3].ToString();
+        //Label5_5.Text = qresponses[4][4].ToString();
+        //Label5Tot.Text = qtotals[4].ToString();
+        //Label5Avg.Text = Math.Round(qavgs[4], 2).ToString();
+
+        ////question 6
+        //Label6_1.Text = qresponses[5][0].ToString();
+        //Label6_2.Text = qresponses[5][1].ToString();
+        //Label6_3.Text = qresponses[5][2].ToString();
+        //Label6_4.Text = qresponses[5][3].ToString();
+        //Label6_5.Text = qresponses[5][4].ToString();
+        //Label6Tot.Text = qtotals[5].ToString();
+        //Label6Avg.Text = Math.Round(qavgs[5], 2).ToString();
+
+        ////question 7
+        //Label7_1.Text = qresponses[6][0].ToString();
+        //Label7_2.Text = qresponses[6][1].ToString();
+        //Label7_3.Text = qresponses[6][2].ToString();
+        //Label7_4.Text = qresponses[6][3].ToString();
+        //Label7_5.Text = qresponses[6][4].ToString();
+        //Label7Tot.Text = qtotals[6].ToString();
+        //Label7Avg.Text = Math.Round(qavgs[6], 2).ToString();
+
+        ////question 8
+        //Label8_1.Text = qresponses[7][0].ToString();
+        //Label8_2.Text = qresponses[7][1].ToString();
+        //Label8_3.Text = qresponses[7][2].ToString();
+        //Label8_4.Text = qresponses[7][3].ToString();
+        //Label8_5.Text = qresponses[7][4].ToString();
+        //Label8Tot.Text = qtotals[7].ToString();
+        //Label8Avg.Text = Math.Round(qavgs[7], 2).ToString();
+
+        ////question 9
+        //Label9_1.Text = qresponses[8][0].ToString();
+        //Label9_2.Text = qresponses[8][1].ToString();
+        //Label9_3.Text = qresponses[8][2].ToString();
+        //Label9_4.Text = qresponses[8][3].ToString();
+        //Label9_5.Text = qresponses[8][4].ToString();
+        //Label9Tot.Text = qtotals[8].ToString();
+        //Label9Avg.Text = Math.Round(qavgs[8], 2).ToString();
+
+        ////question 10
+        //Label10_1.Text = qresponses[9][0].ToString();
+        //Label10_2.Text = qresponses[9][1].ToString();
+        //Label10_3.Text = qresponses[9][2].ToString();
+        //Label10_4.Text = qresponses[9][3].ToString();
+        //Label10_5.Text = qresponses[9][4].ToString();
+        //Label10Tot.Text = qtotals[9].ToString();
+        //Label10Avg.Text = Math.Round(qavgs[9], 2).ToString();
+
+        ////question 11
+        //Label11_1.Text = qresponses[10][0].ToString();
+        //Label11_2.Text = qresponses[10][1].ToString();
+        //Label11_3.Text = qresponses[10][2].ToString();
+        //Label11_4.Text = qresponses[10][3].ToString();
+        //Label11_5.Text = qresponses[10][4].ToString();
+        //Label11Tot.Text = qtotals[10].ToString();
+        //Label11Avg.Text = Math.Round(qavgs[10], 2).ToString();
+
+        ////question 12
+        //Label12_1.Text = qresponses[11][0].ToString();
+        //Label12_2.Text = qresponses[11][1].ToString();
+        //Label12_3.Text = qresponses[11][2].ToString();
+        //Label12_4.Text = qresponses[11][3].ToString();
+        //Label12_5.Text = qresponses[11][4].ToString();
+        //Label12Tot.Text = qtotals[11].ToString();
+        //Label12Avg.Text = Math.Round(qavgs[11], 2).ToString();
+
+        ////question 13
+        //Label13_1.Text = qresponses[12][0].ToString();
+        //Label13_2.Text = qresponses[12][1].ToString();
+        //Label13_3.Text = qresponses[12][2].ToString();
+        //Label13_4.Text = qresponses[12][3].ToString();
+        //Label13_5.Text = qresponses[12][4].ToString();
+        //Label13Tot.Text = qtotals[12].ToString();
+        //Label13Avg.Text = Math.Round(qavgs[12], 2).ToString();
+
+        ////question 14
+        //Label14_1.Text = qresponses[13][0].ToString();
+        //Label14_2.Text = qresponses[13][1].ToString();
+        //Label14_3.Text = qresponses[13][2].ToString();
+        //Label14_4.Text = qresponses[13][3].ToString();
+        //Label14_5.Text = qresponses[13][4].ToString();
+        //Label14Tot.Text = qtotals[13].ToString();
+        //Label14Avg.Text = Math.Round(qavgs[13], 2).ToString();
+
+        ////question 15
+        //Label15_1.Text = qresponses[14][0].ToString();
+        //Label15_2.Text = qresponses[14][1].ToString();
+        //Label15_3.Text = qresponses[14][2].ToString();
+        //Label15_4.Text = qresponses[14][3].ToString();
+        //Label15_5.Text = qresponses[14][4].ToString();
+        //Label15Tot.Text = qtotals[14].ToString();
+        //Label15Avg.Text = Math.Round(qavgs[14], 2).ToString();
+
+        ////question 16
+        //Label16_1.Text = qresponses[15][0].ToString();
+        //Label16_2.Text = qresponses[15][1].ToString();
+        //Label16_3.Text = qresponses[15][2].ToString();
+        //Label16_4.Text = qresponses[15][3].ToString();
+        //Label16_5.Text = qresponses[15][4].ToString();
+        //Label16Tot.Text = qtotals[15].ToString();
+        //Label16Avg.Text = Math.Round(qavgs[15], 2).ToString();
+
+        ////question 17
+        //Label17_1.Text = qresponses[16][0].ToString();
+        //Label17_2.Text = qresponses[16][1].ToString();
+        //Label17_3.Text = qresponses[16][2].ToString();
+        //Label17_4.Text = qresponses[16][3].ToString();
+        //Label17_5.Text = qresponses[16][4].ToString();
+        //Label17Tot.Text = qtotals[16].ToString();
+        //Label17Avg.Text = Math.Round(qavgs[16], 2).ToString();
+
+        ////question 18
+        //Label18_1.Text = qresponses[17][0].ToString();
+        //Label18_2.Text = qresponses[17][1].ToString();
+        //Label18_3.Text = qresponses[17][2].ToString();
+        //Label18_4.Text = qresponses[17][3].ToString();
+        //Label18_5.Text = qresponses[17][4].ToString();
+        //Label18Tot.Text = qtotals[17].ToString();
+        //Label18Avg.Text = Math.Round(qavgs[17], 2).ToString();
+
+        ////question 19
+        //Label19_1.Text = qresponses[18][0].ToString();
+        //Label19_2.Text = qresponses[18][1].ToString();
+        //Label19_3.Text = qresponses[18][2].ToString();
+        //Label19_4.Text = qresponses[18][3].ToString();
+        //Label19_5.Text = qresponses[18][4].ToString();
+        //Label19Tot.Text = qtotals[18].ToString();
+        //Label19Avg.Text = Math.Round(qavgs[18], 2).ToString();
+
+        ////question 20
+        //Label20_1.Text = qresponses[19][0].ToString();
+        //Label20_2.Text = qresponses[19][1].ToString();
+        //Label20_3.Text = qresponses[19][2].ToString();
+        //Label20_4.Text = qresponses[19][3].ToString();
+        //Label20_5.Text = qresponses[19][4].ToString();
+        //Label20Tot.Text = qtotals[19].ToString();
+        //Label20Avg.Text = Math.Round(qavgs[19], 2).ToString();
+
+        ////question 21
+        //Label21_1.Text = qresponses[20][0].ToString();
+        //Label21_2.Text = qresponses[20][1].ToString();
+        //Label21_3.Text = qresponses[20][2].ToString();
+        //Label21_4.Text = qresponses[20][3].ToString();
+        //Label21_5.Text = qresponses[20][4].ToString();
+        //Label21Tot.Text = qtotals[20].ToString();
+        //Label21Avg.Text = Math.Round(qavgs[20], 2).ToString();
+
+        ////question 22
+        //Label22_1.Text = qresponses[21][0].ToString();
+        //Label22_2.Text = qresponses[21][1].ToString();
+        //Label22_3.Text = qresponses[21][2].ToString();
+        //Label22_4.Text = qresponses[21][3].ToString();
+        //Label22_5.Text = qresponses[21][4].ToString();
+        //Label22Tot.Text = qtotals[21].ToString();
+        //Label22Avg.Text = Math.Round(qavgs[21], 2).ToString();
+
+        ////question 23
+        //Label23_1.Text = qresponses[22][0].ToString();
+        //Label23_2.Text = qresponses[22][1].ToString();
+        //Label23_3.Text = qresponses[22][2].ToString();
+        //Label23_4.Text = qresponses[22][3].ToString();
+        //Label23_5.Text = qresponses[22][4].ToString();
+        //Label23Tot.Text = qtotals[22].ToString();
+        //Label23Avg.Text = Math.Round(qavgs[22], 2).ToString();
+
+        ////question 24
+        //Label24_1.Text = qresponses[23][0].ToString();
+        //Label24_2.Text = qresponses[23][1].ToString();
+        //Label24_3.Text = qresponses[23][2].ToString();
+        //Label24_4.Text = qresponses[23][3].ToString();
+        //Label24_5.Text = qresponses[23][4].ToString();
+        //Label24Tot.Text = qtotals[23].ToString();
+        //Label24Avg.Text = Math.Round(qavgs[23], 2).ToString();
+
+        ////question 25
+        //Label25_1.Text = qresponses[24][0].ToString();
+        //Label25_2.Text = qresponses[24][1].ToString();
+        //Label25_3.Text = qresponses[24][2].ToString();
+        //Label25_4.Text = qresponses[24][3].ToString();
+        //Label25_5.Text = qresponses[24][4].ToString();
+        //Label25Tot.Text = qtotals[24].ToString();
+        //Label25Avg.Text = Math.Round(qavgs[24], 2).ToString();
+        
+        ////sections...
+        ////section 1
+        //LabelS1Tot.Text = (qavgs[0] + qavgs[1] + qavgs[2] + qavgs[3] + qavgs[4]).ToString();
+        //LabelS1Avg.Text = (Math.Round((qavgs[0] + qavgs[1] + qavgs[2] + qavgs[3] + qavgs[4]) / 5, 2)).ToString();
+
+        ////section 2
+        //LabelS2Tot.Text = (qavgs[5] + qavgs[6] + qavgs[7] + qavgs[8] + qavgs[9] + qavgs[10]).ToString();
+        //LabelS2Avg.Text = (Math.Round((qavgs[5] + qavgs[6] + qavgs[7] + qavgs[8] + qavgs[9] + qavgs[10]) / 6, 2)).ToString();
+
+        ////section 3
+        //LabelS3Tot.Text = (qtotals[11] + qtotals[12] + qtotals[13] + qtotals[14] + qtotals[15] + qtotals[16]).ToString();
+        //LabelS3Avg.Text = (Math.Round((qtotals[11] + qtotals[12] + qtotals[13] + qtotals[14] + qtotals[15] + qtotals[16]) / 6, 2)).ToString();
+
+        ////section 4
+        //LabelS4Tot.Text = (qtotals[17] + qtotals[18] + qtotals[19] + qtotals[20] + qtotals[21]).ToString();
+        //LabelS4Avg.Text = (Math.Round((qtotals[17] + qtotals[18] + qtotals[19] + qtotals[20] + qtotals[21]) / 5, 2)).ToString();
+
+        ////section 5
+        //LabelS5Tot.Text = (qtotals[22] + qtotals[23] + qtotals[24]).ToString();
+        //LabelS5Avg.Text = (Math.Round((qtotals[22] + qtotals[23] + qtotals[24]) / 3, 2)).ToString();
+
+        ////section 6
+        ////Label17_1.Text = s6responses[0][0].ToString();
+        ////Label17_2.Text = s6responses[0][1].ToString();
+
+        ////Label19_1.Text = s6responses[1][0].ToString();
+        ////Label19_2.Text = s6responses[1][1].ToString();
+        ////Label19_3.Text = s6responses[1][2].ToString();
+        ////Label19_4.Text = s6responses[1][3].ToString();
+        ////Label19_5.Text = s6responses[1][4].ToString();
+    }
+    protected void SqlDataSource2_Selecting(object sender, SqlDataSourceSelectingEventArgs e)
+    {
+
+    }
+}

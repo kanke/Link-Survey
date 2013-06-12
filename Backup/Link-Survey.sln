@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Link-Survey", ".", "{C4560DBF-BCEF-4782-A881-C14401656A6C}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFramework = "3.5"
+		Debug.AspNetCompiler.VirtualPath = "/Link-Survey"
+		Debug.AspNetCompiler.PhysicalPath = "D:\Projects\Link-Survey\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\Link-Survey\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/Link-Survey"
+		Release.AspNetCompiler.PhysicalPath = "D:\Projects\Link-Survey\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\Link-Survey\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "3806"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|.NET = Debug|.NET
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C4560DBF-BCEF-4782-A881-C14401656A6C}.Debug|.NET.ActiveCfg = Debug|.NET
+		{C4560DBF-BCEF-4782-A881-C14401656A6C}.Debug|.NET.Build.0 = Debug|.NET
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

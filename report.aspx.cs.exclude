@@ -1,0 +1,170 @@
+using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Data.Sql;
+using System.Data.SqlClient;
+using System.IO;
+
+public partial class report : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+
+    }
+
+    protected void ExportButton_Click(object sender, EventArgs e)
+    {
+        string mcq = "";
+        foreach( RepeaterItem ri in Repeater1.Items)
+        {
+            mcq += ((Literal)ri.FindControl("qno_s1")).Text + "\t";
+            mcq += ((Literal)ri.FindControl("good")).Text + "\t";
+            mcq += ((Literal)ri.FindControl("bad")).Text + "\t";
+            //mcq += ((Literal)ri.FindControl("rating3_s1")).Text + "\t";
+            //mcq += ((Literal)ri.FindControl("rating4_s1")).Text + "\t";
+            //mcq += ((Literal)ri.FindControl("rating5_s1")).Text + "\t";
+            mcq += ((Literal)ri.FindControl("wtotal_s1")).Text + "\t";
+            mcq += ((Literal)ri.FindControl("wavg_s1")).Text + "\r\n";
+        }
+        mcq += "\t\t\t\t\t\t" + avg_wtotal_1.Text + "\t" + avg_wavg_1.Text + "\r\n\r\n";
+        
+        ////write output to file...
+        //Response.Clear();
+        //Response.Charset = "";
+        //Response.ContentType = "application/vnd.ms-excel";
+        //Response.AddHeader("Content-Disposition", "attachment; filename=\"Finacle Simulation Survey Report.xls\"");
+        //Response.Write("Total Respondents: " + dv1.Rows[0].Cells[0].Text + "\r\n");
+        //Response.Write("Multichoice\t\t\t\t\t\t\t\r\n");
+        //Response.Write("Q.No\tResponses\t\t\t\t\t\tWeighted Analysis\r\n");
+        //Response.Write("\t1\t2\t3\t4\t5\tTotal\tAverage\r\n");
+        //Response.Write(mcq);
+        //Response.End();
+    }
+    protected void ExportProseButton_Click(object sender, EventArgs e)
+    {
+        #region Irrelevant shit
+        /* 
+        Response.Clear();
+        Response.Charset = "";
+        Response.ContentType = "application/vnd.ms-excel";
+        Response.AddHeader("Content-Disposition", "attachment; filename=\"Finacle Readiness Report-Comments.xls\"");
+        Response.Write("q no\tcomment\tdepartment\tbusiness unit\r\n");
+
+        //query database for answers to prose questions...
+        string sql = @"select distinct r.qno, r.comment, d.department, b.bu_name  
+                        from cb.responses2 r
+                        INNER JOIN cb.departments d ON r.dept_id = d.dept_id
+                        INNER JOIN cb.business_units b ON b.bu_id = d.bu_id
+                        where r.comment != 'nil'
+                        order by b.bu_name, d.department, r.qno";
+
+        DBhandler handler = new DBhandler();
+        handler.command.CommandText = sql;
+        handler.connection.Open();
+        SqlDataReader proseReader = handler.command.ExecuteReader();
+
+        //write output to file...
+        while (proseReader.Read())
+        {
+            Response.Write(
+                proseReader.GetValue(0).ToString() + "\t"
+                 + proseReader.GetValue(1).ToString().Trim().Replace("\r\n", "*").Replace("-", ":") + "\t"
+                 + proseReader.GetValue(2).ToString() + "\t"
+                 + proseReader.GetValue(3).ToString() + "\r\n"
+            );
+        }
+        proseReader.Close();
+        Response.End();
+         */
+        #endregion
+
+        Response.Clear();
+        Response.Charset = "";
+        Response.ContentType = "application/vnd.ms-excel";
+        Response.AddHeader("Content-Disposition", "attachment; filename=\"Link Performance Survey Report-Prose.xls\"");
+        Response.Write("Q.no\tResponse\tDate\tDepartment\tBranch\tRegion\tHead of Service Support\tBranch Manager\r\n");
+
+        //query database for answers to prose questions...
+        string sql = @"select l.qno
+        ,l.response
+        ,l.date
+        ,d.dept_name
+        ,b.name
+        ,re.name
+        ,hs.hss_name
+        ,bm.bm_name
+
+        from linksur.link_responses l 
+        inner join linksur.link_departments d on l.dept_no = d.dept_no
+        inner join linksur.link_branches b on l.branch_no = b.branch_no
+        inner join linksur.link_regions re on l.region_no = re.region_no
+		inner join linksur.link_hss hs on l.hss_no = hs.hss_no
+        inner join linksur.link_bm bm on l.bm_no = bm.bm_no
+        where l.qno in('2') order by l.qno desc,l.dept_no,l.branch_no";
+
+        //string sql = "select qno,response,branch,department,region,date from remsur.remedy_responses where qno in('9','10') order by qno desc,department,branch";
+        DBhandler handler = new DBhandler();
+        handler.command.CommandText = sql;
+        handler.connection.Open();
+        SqlDataReader proseReader = handler.command.ExecuteReader();
+
+
+        //write output to file...
+        while (proseReader.Read())
+        {
+            //.Trim().Replace("\r\n", "*").Replace("-", ":")
+            //Response.Write(proseReader.GetValue(0).ToString().Replace("\r\n", "*").Replace("-", ":") + "\t");  //+ proseReader.GetValue(1).ToString().Trim().Replace("\r\n", "*").Replace("-", ":") + "\t" + proseReader.GetValue(2).ToString() + "\t" + proseReader.GetValue(3).ToString() + "\t" + proseReader.GetValue(4).ToString() + "\t" + proseReader.GetValue(5).ToString() + "\t" + proseReader.GetValue(6).ToString() + "\r\n");
+            Response.Write(proseReader.GetValue(0).ToString() + "\t" + proseReader.GetValue(1).ToString() + "\t" + proseReader.GetValue(2).ToString() + "\t" + "\t" + proseReader.GetValue(3).ToString() + "\t" + proseReader.GetValue(4).ToString() + "\t" + proseReader.GetValue(5).ToString() + "\t" + proseReader.GetValue(6).ToString() + "\t" + proseReader.GetValue(7).ToString() + "\r\n");
+        }
+        proseReader.Close();
+
+        Response.End();
+        //msgLabel.Text = "There are no prose questions.";
+    }
+    protected void BizUnitDropDown_DataBound(object sender, EventArgs e)  
+    {
+       // BizUnitDropDown.Items.Insert(0, new ListItem("--Select One --", ""));
+    }
+    protected void DeptDropDown_DataBound(object sender, EventArgs e)
+    {
+        //DeptDropDown.Items.Insert(0, new ListItem("--Select One --", ""));
+        
+    }              
+    protected void Repeater1_PreRender(object sender, EventArgs e)     
+    {
+         int maintotal = 0;
+         decimal smaintotal = 0;
+
+         foreach (RepeaterItem item in Repeater1.Items)
+         {
+             Literal controlYouWant = item.FindControl("wtotal_s1") as Literal;
+             Literal controlYouWant2 = item.FindControl("wavg_s1") as Literal;
+
+             if (controlYouWant.Text != "")
+             {
+                 int total = Convert.ToInt32(controlYouWant.Text);
+                 maintotal = maintotal + total;
+             }
+             if (controlYouWant2.Text != "")
+             {
+                 decimal stotal = Convert.ToDecimal(controlYouWant2.Text);
+                 smaintotal = smaintotal + stotal;
+             }
+             int result = maintotal;
+             decimal sresult = smaintotal / 7;
+
+             avg_wtotal_1.Text = Convert.ToString(result);
+             avg_wavg_1.Text = sresult.ToString("N2");
+            
+         }
+    }
+}
+
+    

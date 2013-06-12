@@ -1,0 +1,41 @@
+﻿using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Xml.Linq;
+
+public partial class Remedy_report : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+
+        //for(int i=1;i<=5;i++)
+        //{
+        //      SqlConnection con = new SqlConnection();
+        //       SqlCommand cmd = new SqlCommand();
+
+        //       con.ConnectionString = ConfigurationManager.ConnectionStrings["remedy_surveyConnectionString"].ConnectionString;
+        //       cmd.Connection = con;
+        //       cmd.CommandText = string.Format("SELECT count(*) FROM remsur.remedy_responses where response='{i}'");
+
+        //       con.Open();
+        //       object o = cmd.ExecuteScalar();
+        //       int response5 = Convert.ToInt32(o);
+        //       int result5;
+
+        //       if (response5 > 0)
+        //       {
+        //           result5 += 1;
+
+        //       }
+        //}
+
+    }
+}
